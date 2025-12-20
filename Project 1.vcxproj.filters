@@ -23,7 +23,7 @@
     <ClInclude Include="buffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="bump_allocator.h">
+    <ClInclude Include="arena.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
