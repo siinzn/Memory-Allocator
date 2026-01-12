@@ -1,4 +1,4 @@
-
+#pragma once
 class Buffer {
 private:
     size_t MemorySize;
