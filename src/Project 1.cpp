@@ -4,6 +4,7 @@
 #include <chrono>
 #include <vector>
 #include "stack.h"
+#include "pool.h"
 
 int main()
 {
@@ -72,5 +73,52 @@ int main()
     std::cout << "Freed test 2b : " << std::endl;
     void* test2c = s.allocate(100, 8);
     std::cout << "Test 2c : " << test2c << std::endl;
+
+    std::cout << "------------------------------------------------" << std::endl;
+    std::cout << "Pool Allocation - " << std::endl;
+
+    PoolAllocator pool;
+    void* ptrs[128]; 
+    int allocated = 0;
+
+    for (int i = 0; i < 128; i++) {
+        ptrs[i] = pool.allocate();
+        if (ptrs[i] == nullptr) {
+            std::cout << "  Unexpected nullptr at index " << i << std::endl;
+            break;
+        }
+        allocated++;
+    }
+    void* extra = pool.allocate();
+    std::cout << "  Allocated " << allocated << " blocks" << std::endl;
+
+    if (extra == nullptr && allocated == 128) {
+        std::cout << "  PASS: Returned nullptr when exhausted" << std::endl;
+    }
+    else {
+        std::cout << "  FAIL: Should return nullptr after exhaustion" << std::endl;
+    }
+
+
+    void* a = pool.allocate();
+    void* b = pool.allocate();
+    std::cout << "  Allocated A: " << a << std::endl;
+    std::cout << "  Allocated B: " << b << std::endl;
+
+    pool.deallocate(a);
+    void* c = pool.allocate();
+    std::cout << "  Freed A, allocated C: " << c << std::endl;
+
+    if (c == a) {
+        std::cout << "  PASS: C reused A's address (free list pop works)" << std::endl;
+    }
+    else {
+        std::cout << "  FAIL: Expected C to equal A" << std::endl;
+    }
+
+    // Cleanup
+    pool.deallocate(b);
+    pool.deallocate(c);
+
     return 0;
 }

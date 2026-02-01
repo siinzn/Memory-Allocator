@@ -1,4 +1,4 @@
-
+#pragma once
 #include "buffer.h"
 #include <stdint.h>
 #include <iostream>
